@@ -1,173 +1,180 @@
 ---
 alwaysApply: true
 ---
-라이브 쿠폰 프로젝트 – 요구사항 및 처리 방식 정리
 
-목적
-본 문서는 현재까지 논의된 내용을 기준으로 라이브 쿠폰(선착순 쿠폰) 서비스의 핵심 요구사항과 이를 만족하기 위한 기술적 처리 방식을 정리한다.
-프론트엔드(React + TypeScript), 백엔드(Spring Boot), Redis를 사용하는 구조를 전제로 한다.
+Live Coupon Project – Requirements and Processing Methodology
 
-⸻
-
-1. 프로젝트 개요
-
-1.1 서비스 목표
-	•	다수의 사용자가 동시에 접근하는 환경에서
-	•	선착순 쿠폰 발급을 정확하고 빠르게 처리
-	•	중복 발급, 초과 발급을 방지하고
-	•	사용자에게 즉각적인 응답을 제공하는 것
+Purpose
+This document outlines the core requirements of a live coupon (first-come, first-served) service and the technical approach to meeting them, based on the discussions so far.
+It assumes a frontend (React + TypeScript), backend (Spring Boot), and Redis.
 
 ⸻
 
-2. 시스템 구성
+1. Project Overview
 
-2.1 전체 구조
+1.1 Service Goals
+• In an environment where multiple users access the service simultaneously,
+
+• Accurately and quickly issue coupons on a first-come, first-served basis.
+
+• Prevent duplicate or over-issuance,
+
+• Provide immediate responses to users.
+
+⸻
+
+2. System Configuration
+
+2.1 Overall Structure
 
 [ React (FE) ]
-      ↓ API 요청
+↓ API Request
 [ Spring Boot (BE) ]
-      ↓
-[ Redis ]  ← 캐시 / 동시성 제어 / 상태 관리
-      ↓
-[ RDBMS ]  ← 영속 데이터 저장
+↓
+[ Redis ] ← Cache / Concurrency Control / State Management
+↓
+[ RDBMS ] ← Persistent Data Storage
 
-2.2 역할 분리
-	•	React: 화면 렌더링, 사용자 이벤트 처리
-	•	Spring Boot: 비즈니스 로직, 검증, 트랜잭션 관리
-	•	Redis: 속도 개선, 동시성 제어, 임시 상태 저장
-	•	DB: 최종 쿠폰 발급 이력, 사용자 데이터 영속화
+2.2 Separation of Roles
+• React: Screen rendering, user event processing
+• Spring Boot: Business logic, validation, transaction management
+• Redis: Speed ​​improvement, concurrency control, temporary state storage
+• DB: Last coupon issuance history, user data persistence
 
 ⸻
 
-3. 핵심 요구사항 및 처리 방식
+3. Key Requirements and Processing Method
 
-3.1 선착순 쿠폰 발급
+3.1 First-come, first-served coupon issuance
 
-요구사항
-	•	쿠폰은 정해진 수량만 발급 가능
-	•	동시에 여러 사용자가 요청해도 초과 발급 불가
+Requirements
+• Only a fixed number of coupons can be issued. • No over-issuance is allowed even if multiple users request the coupon simultaneously.
 
-처리 방식
-	•	Redis의 Atomic 연산 사용
-	•	쿠폰 수량을 Redis에서 관리
+Processing Method
+• Uses Redis's Atomic Operations
+• Manages coupon quantities in Redis
 
 Key: coupon:count:{couponId}
-Value: 남은 수량
+Value: Remaining quantity
 
-	•	발급 요청 시:
-	1.	Redis에서 수량 차감 (DECR)
-	2.	결과가 0 이상이면 성공
-	3.	음수면 실패 처리 및 롤백
+• When requesting an issuance:
+
+1. Deduct the quantity from Redis (DECR)
+2. Success if the result is greater than or equal to 0
+3. Failure and rollback if the result is negative
 
 ⸻
 
-3.2 쿠폰 중복 발급 방지
+3.2 Preventing Duplicate Coupon Issuance
 
-요구사항
-	•	한 사용자는 동일 쿠폰을 1회만 발급 가능
+Requirements
+• Each user can only be issued the same coupon once.
 
-처리 방식
-	•	Redis Set 또는 SETNX 사용
+Processing Method
+• Uses Redis Set or SETNX
 
 Key: coupon:issued:{couponId}
 Value: userId
 
-	•	발급 전 Redis에 사용자 발급 여부 확인
-	•	이미 존재하면 즉시 실패 응답
+• Checks whether a user has been issued a coupon in Redis before issuing.
+• If the coupon already exists, an immediate failure response is returned.
 
 ⸻
 
-3.3 빠른 응답 속도
+3.3 Fast Response Speed
 
-요구사항
-	•	트래픽이 몰려도 API 응답 지연 최소화
+Requirements
+• Minimize API response delay even under heavy traffic.
 
-처리 방식
-	•	DB 조회 최소화
-	•	쿠폰 정보 및 상태를 Redis에 캐시
+Processing Method
+• Minimize DB queries
+• Cache coupon information and status in Redis
 
 Key: coupon:detail:{couponId}
 
-	•	캐시 미스 시에만 DB 조회
-	•	TTL 설정으로 자동 갱신
+• Query the database only in case of a cache miss
+
+Automatic renewal with TTL setting
 
 ⸻
 
-3.4 쿠폰 유효시간 관리
+3.4 Coupon Expiration Time Management
 
-요구사항
-	•	쿠폰은 발급 및 사용에 유효기간 존재
+Requirements
+• Coupons have an expiration date for issuance and use.
 
-처리 방식
-	•	Redis TTL(Time To Live) 활용
+Processing Method
+• Utilizes Redis TTL (Time To Live)
 
 SET coupon:active:{couponId} true EX 3600
 
-	•	만료 시 Redis에서 자동 제거
-	•	별도 배치 작업 불필요
+• Automatically removed from Redis upon expiration
+• No separate batch operation required
 
 ⸻
 
-3.5 트래픽 급증 대응
+3.5 Traffic Surge Response
 
-요구사항
-	•	특정 시점(오픈 시간)에 요청 폭증 가능
+Requirements
+• A surge in requests may occur at specific times (opening hours).
 
-처리 방식
-	•	Redis 선처리 → DB 후처리 구조
-	•	Redis에서 1차 검증 후 성공 건만 DB 저장
-
-⸻
-
-4. React(프론트엔드) 처리 방식
-
-역할
-	•	쿠폰 발급 버튼 제공
-	•	발급 결과에 따른 UI 처리
-
-흐름
-	1.	사용자 버튼 클릭
-	2.	쿠폰 발급 API 요청
-	3.	응답 결과에 따라
-	•	성공: 발급 완료 메시지
-	•	실패: 사유 안내(소진, 중복 등)
-
-Redis와 직접 통신하지 않고 항상 Spring API를 통해서만 통신
+Processing Method
+• Redis preprocessing → DB postprocessing structure
+• After initial verification in Redis, only successful requests are stored in the database.
 
 ⸻
 
-5. Spring Boot(백엔드) 처리 방식
+4. React (front-end) Processing Method
 
-주요 책임
-	•	Redis 기반 선착순 / 중복 검증
-	•	비즈니스 로직 처리
-	•	DB 트랜잭션 관리
+Role
+• Provide a coupon issuance button
+• UI processing based on the issuance result
 
-처리 순서 요약
-	1.	사용자 요청 수신
-	2.	Redis 중복 발급 체크
-	3.	Redis 쿠폰 수량 차감
-	4.	성공 시 DB에 발급 이력 저장
-	5.	결과 반환
+Flow
 
-⸻
+1. User clicks the button
+2. Requests to the coupon issuance API
+3. Based on the response result
+   • Success: Issuance completion message
+   • Failure: Reason information (exhausted, duplicate, etc.)
 
-6. Redis 사용 목적 정리
-
-목적	Redis 사용 이유
-선착순 처리	Atomic 연산 지원
-중복 방지	Set / NX 연산
-성능 개선	In-memory 처리
-TTL 관리	자동 만료 지원
-트래픽 대응	DB 부하 감소
-
+Does not communicate directly with Redis; always uses the Spring API Communication only through Redis
 
 ⸻
 
-7. 정리
-	•	Redis는 속도 + 동시성 제어용
-	•	DB는 최종 데이터 저장소
-	•	React는 상태 표현 및 사용자 경험 담당
+5. Spring Boot (Backend) Processing Method
 
-본 프로젝트의 핵심은
-Redis를 이용한 선착순 제어 + 안정적인 DB 저장 구조에 있다.
+Main Responsibilities
+• Redis-based first-come, first-served / duplicate verification
+• Business logic processing
+• DB transaction management
+
+Summary of processing sequence
+
+1. Receive user request
+2. Redis duplicate issuance check
+3. Redis coupon quantity deduction
+4. If successful, save issuance history to the DB
+5. Return result
+
+⸻
+
+6. Summary of Redis usage purposes
+
+Purpose: Reason for using Redis
+
+First-come, first-served processing: Supports atomic operations
+Duplicate prevention: Set/NX operations
+Performance improvement: In-memory processing
+TTL management: Supports automatic expiration
+Traffic response: Reduces DB load
+
+⸻
+
+7. Summary
+   • Redis for speed and concurrency control
+   • DB as the final data storage
+   • React for state representation and user experience
+
+The core of this project lies in
+first-come, first-served control and a stable DB storage structure using Redis.
