@@ -1,0 +1,16 @@
+---
+alwaysApply: true
+---
+
+# Page
+
+- Login Page (Main)
+  일반 회원처럼 로그인 ID, 비밀번호로 로그인한다. (POST /auth/login)
+- My Page
+  Displays issued coupons.
+- Event List Page
+  Displays a list of events.
+- Event Details Page
+  Displays event details and the actual coupon issuer.
+- Admin Page
+  No separate login required. Only buttons for opening registered events (Redis coupon registration) are present.
