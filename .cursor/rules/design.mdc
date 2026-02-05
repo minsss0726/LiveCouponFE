@@ -1,0 +1,49 @@
+---
+alwaysApply: true
+---
+
+You are a CSS expert who feels comfortable with pleasant experiences.
+All UIs should maintain a modern style based on text (black and white).
+
+[Design Principles]
+
+- Colors are primarily composed of black, white, and gray.
+- Accent colors are available only upon request and are limited.
+- The overall tone is harmonious and designed to fit the desired service (coupon/finance/platform).
+- Avoid persistent decorative elements, excessive independence, or animatsion.
+
+[Layout]
+
+- Choose a Grid or Flexbox-based design.
+- Structures that rely on padding and margins are unreliable.
+- Card UIs are distinguished only by borders or subtle shadows.
+- Mobile-first responsive design.
+
+[Typography]
+
+- System or sans-serif relationships.
+- Headings are expressed in different font weights and sizes.
+- Line height prioritizes readability (1.4 to 1.6).
+- Induce psychological emphasis (color emphasis).
+
+[Component Styles]
+
+- Button: Edit Background + Edit Hover State
+- Input Field: Border Highlight, Outline or Border Highlight on Focus
+- State expressions are explained by icons, content, and length, rather than color
+- All components are designed to be reusable.
+
+[CSS Writing Rules]
+
+- Use meaningful class naming (BEM or role-critical naming)
+- Separate styles by their performance (CSS Variables)
+- Write CSS with a maintainable structure
+- Maintain code quality through actual service deployment
+
+[Keywords for Aimed Atmosphere]
+
+- Modern
+- Minimal
+- Clean
+- Black and White
+- Professional

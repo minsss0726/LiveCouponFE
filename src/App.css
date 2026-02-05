@@ -1,393 +1,296 @@
-/* Layout */
+/* ============================================
+   Layout - Flexbox, Mobile-first
+   ============================================ */
 .layout {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-.layout-header {
+.layout__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1.5rem;
-  background: var(--header-bg, #1a1a2e);
-  border-bottom: 1px solid var(--border, #333);
+  padding: 0.75rem 1rem;
+  background: var(--color-surface);
+  border-bottom: var(--card-border);
+  box-shadow: var(--card-shadow);
 }
 
-.layout-brand {
+.layout__brand {
   font-weight: 700;
   font-size: 1.25rem;
-  color: var(--brand, #e94560);
+  color: var(--color-text);
   text-decoration: none;
 }
 
-.layout-brand:hover {
-  color: var(--brand-hover, #ff6b6b);
+.layout__brand:hover {
+  color: var(--color-text-secondary);
 }
 
-.layout-nav {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-}
-
-.layout-nav a {
-  color: var(--nav-color, #eee);
-  text-decoration: none;
-  padding: 0.35rem 0.6rem;
-  border-radius: 6px;
-}
-
-.layout-nav a:hover,
-.layout-nav a.active {
-  background: var(--nav-active-bg, rgba(233, 69, 96, 0.2));
-  color: var(--brand, #e94560);
-}
-
-.layout-user {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 0.9rem;
-  color: var(--text-muted, #aaa);
-}
-
-.layout-user .btn-logout {
-  font-size: 0.85rem;
-  padding: 0.25rem 0.5rem;
-  background: transparent;
-  color: var(--text-muted, #aaa);
-  border: 1px solid var(--border, #444);
-}
-
-.layout-user .btn-logout:hover {
-  color: var(--brand, #e94560);
-  border-color: var(--brand, #e94560);
-}
-
-.layout-main {
+.layout__main {
   flex: 1;
-  padding: 1.5rem;
+  padding: 1rem;
   max-width: 900px;
   margin: 0 auto;
   width: 100%;
 }
 
-/* Page common */
+@media (min-width: 640px) {
+  .layout__header {
+    padding: 0.75rem 1.5rem;
+  }
+  .layout__main {
+    padding: 1.5rem;
+  }
+}
+
+/* ============================================
+   Page common
+   ============================================ */
 .page {
   text-align: left;
 }
 
-.page h1 {
-  font-size: 1.75rem;
+.page__title {
+  font-size: 1.5rem;
+  font-weight: 600;
   margin-bottom: 1rem;
+  line-height: 1.4;
 }
 
-.page-error {
-  color: var(--error, #e94560);
-}
-
-.empty {
-  color: var(--text-muted, #888);
+.page__empty {
+  color: var(--color-text-muted);
   margin: 1rem 0;
-}
-
-/* Login */
-.login-page {
-  max-width: 400px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.login-desc {
-  color: var(--text-muted, #888);
-  margin-bottom: 1.5rem;
   font-size: 0.95rem;
 }
 
-.login-form label {
-  display: block;
-  text-align: left;
-  margin-bottom: 0.35rem;
-  font-size: 0.9rem;
+/* ============================================
+   Login page - Form, Input focus
+   ============================================ */
+.login-page {
+  max-width: 400px;
+  margin: 0 auto;
 }
 
-.login-form label + input {
-  display: block;
-  width: 100%;
-  padding: 0.6rem 0.75rem;
-  margin-bottom: 1rem;
-  border: 1px solid var(--border, #444);
-  border-radius: 8px;
-  background: var(--input-bg, #2a2a3e);
-  color: inherit;
-  font-size: 1rem;
-  box-sizing: border-box;
-}
-
-.login-input-row {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.login-input-row input {
-  flex: 1;
-  padding: 0.6rem 0.75rem;
-  border: 1px solid var(--border, #444);
-  border-radius: 8px;
-  background: var(--input-bg, #2a2a3e);
-  color: inherit;
-  font-size: 1rem;
-}
-
-.login-form .btn-primary {
-  width: 100%;
-  padding: 0.65rem;
-  background: var(--brand, #e94560);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
+.login-page__title {
+  font-size: 1.5rem;
   font-weight: 600;
-  cursor: pointer;
+  margin-bottom: 1.5rem;
+  text-align: center;
 }
 
-.login-form .btn-primary:hover {
-  background: var(--brand-hover, #ff6b6b);
-}
-
-.form-error {
-  color: var(--error, #e94560);
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-}
-
-.login-hint {
-  margin-top: 1.5rem;
-  font-size: 0.85rem;
-  color: var(--text-muted, #666);
-}
-
-/* My Page */
-.mypage-user {
-  color: var(--text-muted, #888);
-  margin-bottom: 1.25rem;
-}
-
-.coupon-list-section h2 {
-  font-size: 1.15rem;
-  margin-bottom: 0.75rem;
-}
-
-.coupon-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.coupon-list .coupon-card {
+.login-form {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.85rem 1rem;
-  background: var(--card-bg, #2a2a3e);
-  border-radius: 8px;
-  margin-bottom: 0.5rem;
-  border: 1px solid var(--border, #333);
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.coupon-name {
-  font-weight: 500;
+.login-form__row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
 }
 
-.coupon-status {
+.login-form__label {
+  display: block;
   font-size: 0.9rem;
-  color: var(--text-muted, #888);
+  font-weight: 500;
+  color: var(--color-text-secondary);
 }
 
-/* Event List */
+.login-form__input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--input-border);
+  border-radius: 6px;
+  background: var(--input-bg);
+  font-size: 1rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.login-form__input:focus {
+  outline: none;
+  border-color: var(--input-focus-border);
+  box-shadow: 0 0 0 2px rgba(66, 66, 66, 0.12);
+}
+
+.login-form__submit {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.65rem 1rem;
+  font-weight: 600;
+}
+
+/* ============================================
+   Event list - Card (border / subtle shadow)
+   ============================================ */
 .event-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .event-card {
   padding: 1rem 1.25rem;
-  background: var(--card-bg, #2a2a3e);
-  border-radius: 10px;
-  margin-bottom: 0.75rem;
-  border: 1px solid var(--border, #333);
+  background: var(--color-surface);
+  border: var(--card-border);
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
   cursor: pointer;
-  transition:
-    border-color 0.2s,
-    background 0.2s;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .event-card:hover {
-  border-color: var(--brand, #e94560);
-  background: var(--card-hover, #333350);
+  border-color: var(--color-border-strong);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.event-card h3 {
+@media (prefers-color-scheme: dark) {
+  .event-card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  }
+}
+
+.event-card__title {
   font-size: 1.1rem;
+  font-weight: 600;
   margin-bottom: 0.35rem;
 }
 
-.event-meta {
+.event-card__detail {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.25rem;
+  line-height: 1.5;
+}
+
+.event-card__meta {
   font-size: 0.85rem;
-  color: var(--text-muted, #888);
-  margin-bottom: 0.35rem;
+  color: var(--color-text-muted);
 }
 
-.event-detail {
-  font-size: 0.9rem;
-  color: var(--text-muted, #aaa);
-  margin: 0;
-}
-
-/* Event Detail */
-.btn-back {
+/* ============================================
+   Event details - Info block, Coupon cards
+   ============================================ */
+.event-detail-page__title {
+  font-size: 1.5rem;
+  font-weight: 600;
   margin-bottom: 1rem;
-  padding: 0.4rem 0.75rem;
-  background: transparent;
-  color: var(--text-muted, #888);
-  border: 1px solid var(--border, #444);
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.btn-back:hover {
-  color: var(--brand, #e94560);
-  border-color: var(--brand, #e94560);
 }
 
 .event-info {
+  padding: 1rem 1.25rem;
   margin-bottom: 1.5rem;
-}
-
-.issue-message {
-  padding: 0.6rem 1rem;
+  background: var(--color-surface);
+  border: var(--card-border);
   border-radius: 8px;
-  margin-bottom: 1rem;
+  box-shadow: var(--card-shadow);
+}
+
+.event-info__row {
+  margin-bottom: 0.5rem;
   font-size: 0.95rem;
+  line-height: 1.5;
 }
 
-.issue-message.success {
-  background: rgba(0, 200, 100, 0.15);
-  color: #0c6;
+.event-info__row:last-child {
+  margin-bottom: 0;
 }
 
-.issue-message.error {
-  background: rgba(233, 69, 96, 0.15);
-  color: var(--error, #e94560);
+.event-info__label {
+  color: var(--color-text-muted);
+  margin-right: 0.5rem;
 }
 
-.coupon-section h2 {
+.event-detail-page__section-title {
   font-size: 1.15rem;
+  font-weight: 600;
   margin-bottom: 0.75rem;
 }
 
-.event-detail-page .coupon-list .coupon-card {
+.coupon-list {
+  display: flex;
   flex-direction: column;
-  align-items: stretch;
+  gap: 0.75rem;
+}
+
+.coupon-card {
+  padding: 1rem 1.25rem;
+  background: var(--color-surface);
+  border: var(--card-border);
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
   gap: 0.5rem;
 }
 
-.event-detail-page .coupon-card h3 {
+.coupon-card__title {
   font-size: 1rem;
+  font-weight: 600;
   margin: 0;
 }
 
-.coupon-detail,
-.coupon-meta,
-.coupon-count {
+.coupon-card__detail,
+.coupon-card__meta {
   font-size: 0.9rem;
-  color: var(--text-muted, #888);
+  color: var(--color-text-secondary);
   margin: 0;
+  line-height: 1.5;
 }
 
-.btn-issue {
-  margin-top: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: var(--brand, #e94560);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
+.coupon-card__action {
+  margin-top: 0.25rem;
   align-self: flex-start;
 }
 
-.btn-issue:hover:not(:disabled) {
-  background: var(--brand-hover, #ff6b6b);
-}
-
-.btn-issue:disabled {
-  opacity: 0.7;
+.coupon-card__action:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
-/* Admin */
-.admin-desc {
-  color: var(--text-muted, #888);
-  margin-bottom: 1.25rem;
-  font-size: 0.95rem;
-}
-
-.admin-message {
-  padding: 0.6rem 1rem;
-  border-radius: 8px;
+/* ============================================
+   Admin page - Event cards, Button
+   ============================================ */
+.admin-page__title {
+  font-size: 1.5rem;
+  font-weight: 600;
   margin-bottom: 1rem;
-  font-size: 0.95rem;
-}
-
-.admin-message.success {
-  background: rgba(0, 200, 100, 0.15);
-  color: #0c6;
-}
-
-.admin-message.error {
-  background: rgba(233, 69, 96, 0.15);
-  color: var(--error, #e94560);
 }
 
 .admin-event-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .admin-event-card {
   padding: 1rem 1.25rem;
-  background: var(--card-bg, #2a2a3e);
-  border-radius: 10px;
-  margin-bottom: 0.75rem;
-  border: 1px solid var(--border, #333);
+  background: var(--color-surface);
+  border: var(--card-border);
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
 }
 
-.admin-event-card h3 {
+.admin-event-card__title {
   font-size: 1.1rem;
+  font-weight: 600;
   margin-bottom: 0.35rem;
 }
 
-.btn-initialize {
-  margin-top: 0.75rem;
-  padding: 0.5rem 1rem;
-  background: var(--brand, #e94560);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
+.admin-event-card__detail {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.25rem;
 }
 
-.btn-initialize:hover:not(:disabled) {
-  background: var(--brand-hover, #ff6b6b);
+.admin-event-card__meta {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.75rem;
 }
 
-.btn-initialize:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
+.admin-event-card__btn {
+  margin-top: 0.25rem;
 }
